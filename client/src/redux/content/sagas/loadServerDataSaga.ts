@@ -1,15 +1,15 @@
-import { takeEvery, put, retry } from 'redux-saga/effects';
-import { actionTypes } from '../../actionTypes';
+import { takeEvery, put, call } from 'redux-saga/effects';
+import { actionTypes, ResponseServerDataSaga } from '../../actionTypes';
 import { loadingPage, serverData } from '../actions';
 
-async function fetchServerData() {
+async function fetchServerData(): Promise<ResponseServerDataSaga> {
   return await (await fetch('content/text')).json();
 }
-function* sagaWorker(): Generator<any> {
+function* sagaWorker() {
   yield put(loadingPage());
-  const response: any = yield retry(3, 1000, fetchServerData);
-  yield put(serverData(response.text));
+  const { text }: ResponseServerDataSaga = yield call(fetchServerData);
+  yield put(serverData(text));
 }
 export default function* sagaWatcher() {
-  yield takeEvery(actionTypes.LOAD_SERVER_DATA as any, sagaWorker);
+  yield takeEvery(actionTypes.LOAD_SERVER_DATA, sagaWorker);
 }

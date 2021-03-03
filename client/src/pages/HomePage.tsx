@@ -2,13 +2,14 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Spiner from '../components/spinner/spinner';
 import { loadServerDataSaga } from '../redux/content/actions';
+import { RootState } from '../redux/store'
 
 export default function HomePage() {
-  const { isAuth } = useSelector((state: any) => state.auth);
-  const { serverData, loading } = useSelector((state: any) => state.content);
+  const { isAuth } = useSelector((state: RootState) => state.auth);
+  const { serverData, loading } = useSelector((state: RootState) => state.content);
   const dispatch = useDispatch();
   const loadServerText = () => {
-    dispatch(loadServerDataSaga(333));
+    dispatch(loadServerDataSaga());
   };
   return (
     <>

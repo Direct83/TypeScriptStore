@@ -2,17 +2,18 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { authFetchSaga } from '../redux/auth/actions';
+import { RootState } from '../redux/store'
 
 export default function SignUp() {
-  const { isAuth } = useSelector((state: any) => state.auth);
+  const { isAuth } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const [authData, setAuthData] = useState({
     name: '',
     email: '',
     password: '',
   });
-  const inputHundler = (event: React.SyntheticEvent<EventTarget>) => {
-    const { name, value }: any = event.target;
+  const inputHundler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
     setAuthData((previousAuthData) => ({
       ...previousAuthData,
       [name]: value,

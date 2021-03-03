@@ -1,8 +1,8 @@
 import { takeEvery, put, call } from 'redux-saga/effects';
-import { actionTypes, authUserPayload } from '../../actionTypes';
+import { actionTypes, AuthUserPayload, AuthData, ResponseAuth } from '../../actionTypes';
 import { signInUser } from '../actions';
 
-async function authUserFetch(authData: any, path: any) {
+async function authUserFetch(authData: AuthData, path: string): Promise<ResponseAuth> {
   return await (await fetch(`auth/${path}`, {
     method: 'POST',
     headers: {
@@ -11,10 +11,10 @@ async function authUserFetch(authData: any, path: any) {
     body: JSON.stringify({ ...authData }),
   })).json();
 }
-function* sagaWorker({ payload: { authData, path } }: authUserPayload): Generator<any> {
-  const response: any = yield call(() => authUserFetch(authData, path));
-  yield put(signInUser(response.userId, response.userName));
+function* sagaWorker({ payload: { authData, path } }: AuthUserPayload) {
+  const { userId, userName }: ResponseAuth = yield call(authUserFetch, authData, path);
+  yield put(signInUser(userId, userName));
 }
 export default function* sagaWatcher() {
-  yield takeEvery(actionTypes.AUTH_USER as any, sagaWorker);
+  yield takeEvery(actionTypes.AUTH_USER, sagaWorker);
 }
