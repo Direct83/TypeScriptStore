@@ -4,15 +4,16 @@ import { Redirect } from 'react-router-dom';
 import { authFetchSaga } from '../redux/auth/actions';
 
 const SignIn = () => {
-  const { isAuth } = useSelector((state) => state.auth);
+  const { isAuth } = useSelector((state: any) => state.auth);
   const dispatch = useDispatch();
   const [authData, setAuthData] = useState({
     name: '',
     password: '',
   });
 
-  const inputHundler = (event) => {
-    const { name, value } = event.target;
+  const inputHundler = (event: React.SyntheticEvent<EventTarget>
+  ) => {
+    const { name, value }: any = event.target;
     setAuthData((previousAuthData) => ({
       ...previousAuthData,
       [name]: value,

@@ -5,8 +5,7 @@ export enum actionTypes {
   SERVER_DATA = 'SERVER_DATA',
   LOAD_SERVER_DATA = 'LOAD_SERVER_DATA',
   AUTH_USER = 'AUTH_USER'
-};
-
+}
 export interface authData {
   name: string,
   password: string,

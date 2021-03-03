@@ -3,7 +3,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 export default function AuthPage() {
-  const { isAuth } = useSelector((state) => state.auth);
+  const { isAuth } = useSelector((state: any) => state.auth);
   return (
     <>
       {isAuth && <Redirect to="/" />}

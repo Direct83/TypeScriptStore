@@ -4,8 +4,8 @@ import Spiner from '../components/spinner/spinner';
 import { loadServerDataSaga } from '../redux/content/actions';
 
 export default function HomePage() {
-  const { isAuth } = useSelector((state) => state.auth);
-  const { serverData, loading } = useSelector((state) => state.content);
+  const { isAuth } = useSelector((state: any) => state.auth);
+  const { serverData, loading } = useSelector((state: any) => state.content);
   const dispatch = useDispatch();
   const loadServerText = () => {
     dispatch(loadServerDataSaga(333));

@@ -11,8 +11,8 @@ async function authUserFetch(authData: any, path: any) {
     body: JSON.stringify({ ...authData }),
   })).json();
 }
-function* sagaWorker({ payload: { authData, path } }: authUserPayload) {
-  const response = yield call(() => authUserFetch(authData, path));
+function* sagaWorker({ payload: { authData, path } }: authUserPayload): Generator<any> {
+  const response: any = yield call(() => authUserFetch(authData, path));
   yield put(signInUser(response.userId, response.userName));
 }
 export default function* sagaWatcher() {
