@@ -7,11 +7,13 @@ import contentReducer from './content/reducer';
 import rootSagas from './rootSagas';
 
 const saga = createSagaMiddleware();
+const rootReducer = combineReducers({
+  auth: userReducer,
+  content: contentReducer,
+})
+export type RootState = ReturnType<typeof rootReducer>
 const store = createStore(
-  combineReducers({
-    auth: userReducer,
-    content: contentReducer,
-  }),
+  rootReducer,
   composeWithDevTools(applyMiddleware(
     thunkMiddleware,
     saga,
