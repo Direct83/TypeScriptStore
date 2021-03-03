@@ -10,7 +10,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 
-mongoose.connect(process.env.DB_PATH, {
+mongoose.connect(process.env.DB_PATH as string, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true,
@@ -29,7 +29,7 @@ mongoose.connect(process.env.DB_PATH, {
 const app = express();
 const MongoStore = connectMongo(session);
 const sessionStore = new MongoStore({
-  mongooseConnection: mongoose.createConnection(process.env.SESSION_DB_PATH, {
+  mongooseConnection: mongoose.createConnection(process.env.SESSION_DB_PATH as string, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
@@ -45,10 +45,21 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// UserSession
+interface UserSession {
+  userId: string,
+  userName: string,
+}
+declare module 'express-session' {
+  interface SessionData {
+    user: UserSession;
+  }
+}
+
 app.use(
   session({
     name: 'sid',
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET as string,
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
@@ -65,5 +76,5 @@ app.use('/content', contentRouter);
 
 app.use(notFoundMiddleware);
 
-const port = process.env.PORT ?? 3100;
+const port = process.env.PORT as string ?? 3100;
 

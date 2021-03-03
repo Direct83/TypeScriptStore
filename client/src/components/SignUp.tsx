@@ -12,7 +12,7 @@ export default function SignUp() {
     email: '',
     password: '',
   });
-  const inputHundler = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const inputHundler = (event:React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setAuthData((previousAuthData) => ({
       ...previousAuthData,

@@ -13,8 +13,9 @@ export function serverData(data: string) {
   };
 }
 
-export function loadServerDataSaga() {
+export function loadServerDataSaga(data: number) {
   return {
     type: actionTypes.LOAD_SERVER_DATA,
+    payload: data,
   };
 }
