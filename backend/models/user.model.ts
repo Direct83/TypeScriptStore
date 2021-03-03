@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose"
 
 const UserModelSchema = new mongoose.Schema({
   // Имя пользователя
@@ -21,4 +21,10 @@ const UserModelSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model('UserModel', UserModelSchema);
+export interface UserModelType extends mongoose.Document {
+  name: string,
+  password: string,
+  email: string,
+}
+export const UserModel: mongoose.Model<UserModelType> = mongoose.model('UserModel', UserModelSchema);
+

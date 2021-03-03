@@ -1,19 +1,21 @@
 import bcrypt from 'bcrypt';
 import express from 'express';
-import UserModel from '../models/user.model.js';
+import { UserModelType, UserModel } from '../models/user.model.js';
 
 const router = express.Router();
 
-router.post('/signup', async (req, res) => {
+
+router.post('/signup', async (req: express.Request, res: express.Response) => {
   const { name, password, email } = req.body;
   try {
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await UserModel.create({
+    const user: UserModelType = await UserModel.create({
       name,
       email,
       password: hashedPassword,
     })
+    // globalTypes переопределить тип session
     req.session.user = { userId: user.id, userName: user.name }
     res.json({ userId: user.id, userName: user.name })
   } catch (error) {
@@ -25,7 +27,7 @@ router.post('/signup', async (req, res) => {
 router.post('/signin', async (req, res) => {
   const { name, password } = req.body;
   try {
-    const user = await UserModel.findOne({ name }).exec();
+    const user: UserModelType = await UserModel.findOne({ name }).exec();
     if (!user) {
       return res.json({ message: "все не ок c Именем" })
     }
