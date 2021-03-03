@@ -1,10 +1,10 @@
-import { actionTypes } from '../actionTypes';
+import { actionTypes, ContentReducerIS, ContentActionTypes } from '../actionTypes';
 
-const initialState: any = {
+const initialState: ContentReducerIS = {
   serverData: '',
   loading: false,
 };
-export default function userReducer(state = initialState, action: any): any {
+export default function userReducer(state = initialState, action: ContentActionTypes): ContentReducerIS {
   switch (action.type) {
     case actionTypes.SERVER_DATA:
       return {

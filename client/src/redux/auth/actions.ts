@@ -1,4 +1,4 @@
-import { actionTypes, authData } from '../actionTypes';
+import { actionTypes, AuthData } from '../actionTypes';
 
 export function signInUser(userId: string, userName: string) {
   return {
@@ -15,7 +15,7 @@ export function logOutUser() {
   };
 }
 
-export function authFetchSaga(authData: authData, path: string) {
+export function authFetchSaga(authData: AuthData, path: string) {
   return {
     type: actionTypes.AUTH_USER,
     payload: {

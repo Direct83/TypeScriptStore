@@ -2,9 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logOutUser } from '../redux/auth/actions';
+import { RootState } from '../redux/store'
 
 export default function Navbar() {
-  const { isAuth } = useSelector((state: any) => state.auth);
+  const { isAuth } = useSelector((state: RootState) => state.auth);
+  console.log('Navbar', isAuth)
   const dispatch = useDispatch();
   const logout = async () => {
     await fetch('auth/signout');
