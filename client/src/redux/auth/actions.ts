@@ -1,6 +1,6 @@
-import actionTypes from '../actionTypes';
+import { actionTypes, authData } from '../actionTypes';
 
-export function signInUser(userId, userName) {
+export function signInUser(userId: string, userName: string) {
   return {
     type: actionTypes.LOGIN_USER,
     payload: {
@@ -15,7 +15,7 @@ export function logOutUser() {
   };
 }
 
-export function authFetchSaga(authData, path) {
+export function authFetchSaga(authData: authData, path: string) {
   return {
     type: actionTypes.AUTH_USER,
     payload: {
@@ -26,7 +26,7 @@ export function authFetchSaga(authData, path) {
 }
 
 export function checkAuth() {
-  return async (dispatch) => {
+  return async (dispatch: any) => {
     const response = await (await fetch('auth/check')).json();
     dispatch(signInUser(response.userId, response.userName));
   };
