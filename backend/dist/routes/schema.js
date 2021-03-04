@@ -1,0 +1,2 @@
+import { buildSchema } from 'graphql';
+export var schema = buildSchema("\n  type User {\n  name: String,\n  password: String,\n  email: String,\n  id: String\n  }\n  input UserInput {\n    name: String!,\n    password: String!,\n    email: String,\n    id: String\n  }\n  type Query {\n    getAllUsers: [User]\n    getUser(id: ID): User\n  }\n  type Mutation {\n    createUser(input: UserInput): User\n  }\n");

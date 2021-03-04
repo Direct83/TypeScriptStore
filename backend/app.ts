@@ -4,6 +4,9 @@ import cors from 'cors';
 import authRouter from './routes/auth.js'
 import contentRouter from './routes/content.js'
 import connectMongo from "connect-mongo";
+import { graphqlHTTP } from 'express-graphql';  // GraphQL
+
+import { schema } from './routes/schema.js'
 
 import notFoundMiddleware from './middlewares/notfound404.js';
 import mongoose from "mongoose";
@@ -70,7 +73,51 @@ app.use(
     },
   }),
 );
+import {UserModel, UserModelType} from './models/user.model.js'
+const root = {
+  getAllUsers: async () => {
+    const user = await UserModel.find({})
+    return user
+  },
+  createUser: async (test:any) => {
+    const { name, password, email } = test.input;
+    const user: UserModelType = await UserModel.create({
+      name,
+      email,
+      password,
+    })
+    return { id: user.id, name: user.name, email: user.email }
+  },
+  // singInUser: async (test:any) => {
+  //   const { name, password } = test.input;
 
+  //   const user = await UserModel.findOne({ name }).exec();
+  //   if (!user) {
+  //     return res.json({ message: 'все не ок c Именем' })
+  //   }
+  //   const isValidPassword = await bcrypt.compare(password, user.password);
+  //   if (!isValidPassword) {
+  //     return res.json({ message: 'все не ок c Паролем' })
+  //   }
+  //   req.session.user = { userId: user.id, userName: user.name };
+  //   res.json({ userId: user.id, userName: user.name })
+  // } catch (error) {
+  //   return res.json({ message: "все не ок", error: error.message });
+  // }
+
+  //   const user: UserModelType = await UserModel.create({
+  //     name,
+  //     email,
+  //     password,
+  //   })
+  //   return { id: user.id, name: user.name, email: user.email }
+  // },
+}
+app.use('/graphql', graphqlHTTP({
+  graphiql: true,
+  schema,
+  rootValue: root
+})) // GraphQL
 app.use('/auth', authRouter);
 app.use('/content', contentRouter);
 
