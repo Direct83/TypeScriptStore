@@ -4,9 +4,8 @@ import cors from 'cors';
 import authRouter from './routes/auth.js'
 import contentRouter from './routes/content.js'
 import connectMongo from "connect-mongo";
-import { graphqlHTTP } from 'express-graphql';  // GraphQL
 
-import { schema } from './routes/schema.js'
+
 
 import notFoundMiddleware from './middlewares/notfound404.js';
 import mongoose from "mongoose";
@@ -30,6 +29,7 @@ mongoose.connect(process.env.DB_PATH as string, {
   });
 
 const app = express();
+
 const MongoStore = connectMongo(session);
 const sessionStore = new MongoStore({
   mongooseConnection: mongoose.createConnection(process.env.SESSION_DB_PATH as string, {
@@ -73,51 +73,86 @@ app.use(
     },
   }),
 );
-import {UserModel, UserModelType} from './models/user.model.js'
-const root = {
-  getAllUsers: async () => {
-    const user = await UserModel.find({})
-    return user
-  },
-  createUser: async (test:any) => {
-    const { name, password, email } = test.input;
-    const user: UserModelType = await UserModel.create({
-      name,
-      email,
-      password,
-    })
-    return { id: user.id, name: user.name, email: user.email }
-  },
-  // singInUser: async (test:any) => {
-  //   const { name, password } = test.input;
 
-  //   const user = await UserModel.findOne({ name }).exec();
-  //   if (!user) {
-  //     return res.json({ message: 'все не ок c Именем' })
-  //   }
-  //   const isValidPassword = await bcrypt.compare(password, user.password);
-  //   if (!isValidPassword) {
-  //     return res.json({ message: 'все не ок c Паролем' })
-  //   }
-  //   req.session.user = { userId: user.id, userName: user.name };
-  //   res.json({ userId: user.id, userName: user.name })
-  // } catch (error) {
-  //   return res.json({ message: "все не ок", error: error.message });
-  // }
+// GraphQL
 
-  //   const user: UserModelType = await UserModel.create({
-  //     name,
-  //     email,
-  //     password,
-  //   })
-  //   return { id: user.id, name: user.name, email: user.email }
-  // },
+import {resolvers} from './types/resolvers.js'
+// import * as bodyParser from "body-parser";
+// import * as path from "path";
+// import { loadSchemaSync } from '@graphql-tools/load'; // the same as import { importSchema } from 'graphql-import';
+import { ApolloServer, gql }  from 'apollo-server-express';
+
+const typeDefs = gql`
+type signUpType {
+  userId: String,
+  name: String,
+  password: String,
+  email: String,
+  message: String,
 }
-app.use('/graphql', graphqlHTTP({
-  graphiql: true,
-  schema,
-  rootValue: root
-})) // GraphQL
+input signUpInput {
+  userId: String,
+  name: String, 
+  password: String, 
+  email: String,
+  message: String,
+}
+type signInType {
+  userId: String,
+  name: String, 
+  password: String,
+  email: String
+  message: String,
+  userName: String,
+}
+input signInInput {
+  userId: String,
+  name: String, 
+  password: String, 
+  email: String,
+  message: String,
+  userName: String,
+}
+type Query {
+  signout: String
+  check: String
+}
+type Mutation {
+  signUp(input: signUpInput): signUpType
+  signIn(input: signInInput ): signInType
+}
+`;  // const typeDefs = loadSchemaSync(path.join(__dirname, './schema.graphql'));
+
+const server = new ApolloServer({ 
+  typeDefs, 
+  resolvers, 
+  tracing: true, 
+  context: ({ req }) => {
+    return {
+      req
+    };
+  } 
+});
+server.applyMiddleware({ app });
+
+// app.use(
+//   "/graphql",
+//   bodyParser.json(),
+//   (req, _, next) => {
+//     console.log(req.session);
+//     return next();
+//   },
+//   graphqlExpress(req => ({
+//     schema,
+//     context: { req }
+//   }))
+// );
+
+// app.use('/graphql', graphqlHTTP({
+//   graphiql: true,
+//   schema,
+//   rootValue: root
+// })) // GraphQL
 app.use('/auth', authRouter);
 app.use('/content', contentRouter);
 
