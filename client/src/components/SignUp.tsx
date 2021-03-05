@@ -1,10 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { authFetchSaga } from '../redux/auth/actions';
 import { RootState } from '../redux/store'
 
+import { useQuery, gql, useMutation } from '@apollo/client';
+// import { SIGNUP_GRAPH } from '../query/user';
+
+const SIGNUP_GRAPH: any = gql`
+  mutation {
+    signUp(
+      input: { name: "Serg8", email: "serge@cloude.com", password: "1234" } 
+    ) {
+      name
+      userId
+      password
+      email
+    }
+  }
+`;
+
+const SIGNOUT_GRAPH: any = gql`
+query {
+  signout {
+    message
+  }
+}
+`;
+
 export default function SignUp() {
+  // const { loading, error, data } = useQuery(SIGNOUT_GRAPH);
+  const [test, { data }] = useMutation(SIGNUP_GRAPH);
+  console.log('test', test)
+  console.log('data', data)
   const { isAuth } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const [authData, setAuthData] = useState({
@@ -21,7 +49,9 @@ export default function SignUp() {
   };
   const signUpHandler = async () => {
     const path = 'signup';
-    dispatch(authFetchSaga(authData, path));
+    
+    console.log('authData:%s, data:%s', authData, data)
+    // dispatch(authFetchSaga(authData, path));
   };
 
   return (

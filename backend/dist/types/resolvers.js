@@ -51,11 +51,18 @@ export var resolvers = {
     Query: {
         signout: function (_, __, _a) {
             var req = _a.req, res = _a.res, next = _a.next;
-            req.session.destroy(function (err) {
-                if (err)
-                    return next(err);
-                res.clearCookie('sid');
-                return res.redirect('/');
+            return __awaiter(void 0, void 0, void 0, function () {
+                return __generator(this, function (_b) {
+                    // console.log('начало');
+                    // await req.session.destroy((err:any) => {
+                    //   // if (err) return next(err);
+                    //   console.log('до куки');
+                    //   res.clearCookie('sid');
+                    //   console.log('после куки');
+                    //   console.log('до ретурт');
+                    // });
+                    return [2 /*return*/, { message: 'Вы успушно вышли из системы' }];
+                });
             });
         },
         check: function (_, __, _a) {
@@ -64,7 +71,7 @@ export var resolvers = {
                 return __assign({}, req.session.user);
             }
             else {
-                return "Could not find cookie :(";
+                return { message: "Could not find cookie :(" };
             }
         }
     },
@@ -105,30 +112,31 @@ export var resolvers = {
         signIn: function (_, args, _a) {
             var req = _a.req;
             return __awaiter(void 0, void 0, void 0, function () {
-                var name, password, user, isValidPassword, error_2;
-                return __generator(this, function (_b) {
-                    switch (_b.label) {
+                var _b, name, password, user, isValidPassword, error_2;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
                         case 0:
-                            name = args.name, password = args.password;
-                            _b.label = 1;
+                            console.log('args.input', args.input);
+                            _b = args.input, name = _b.name, password = _b.password;
+                            _c.label = 1;
                         case 1:
-                            _b.trys.push([1, 4, , 5]);
+                            _c.trys.push([1, 4, , 5]);
                             return [4 /*yield*/, UserModel.findOne({ name: name }).exec()];
                         case 2:
-                            user = _b.sent();
+                            user = _c.sent();
                             if (!user) {
                                 return [2 /*return*/, { message: 'все не ок c Именем' }];
                             }
                             return [4 /*yield*/, bcrypt.compare(password, user.password)];
                         case 3:
-                            isValidPassword = _b.sent();
+                            isValidPassword = _c.sent();
                             if (!isValidPassword) {
                                 return [2 /*return*/, { message: 'все не ок c Паролем' }];
                             }
                             req.session.user = { userId: user.id, userName: user.name };
                             return [2 /*return*/, { userId: user.id, userName: user.name }];
                         case 4:
-                            error_2 = _b.sent();
+                            error_2 = _c.sent();
                             return [2 /*return*/, { message: "все не ок", error: error_2.message }];
                         case 5: return [2 /*return*/];
                     }

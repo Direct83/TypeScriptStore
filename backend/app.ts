@@ -77,82 +77,22 @@ app.use(
 // GraphQL
 
 import {resolvers} from './types/resolvers.js'
-// import * as bodyParser from "body-parser";
-// import * as path from "path";
-// import { loadSchemaSync } from '@graphql-tools/load'; // the same as import { importSchema } from 'graphql-import';
-import { ApolloServer, gql }  from 'apollo-server-express';
+import { ApolloServer }  from 'apollo-server-express';
+import { typeDefs } from './types/typeDefs.js'
 
-const typeDefs = gql`
-type signUpType {
-  userId: String,
-  name: String,
-  password: String,
-  email: String,
-  message: String,
-}
-input signUpInput {
-  userId: String,
-  name: String, 
-  password: String, 
-  email: String,
-  message: String,
-}
-type signInType {
-  userId: String,
-  name: String, 
-  password: String,
-  email: String
-  message: String,
-  userName: String,
-}
-input signInInput {
-  userId: String,
-  name: String, 
-  password: String, 
-  email: String,
-  message: String,
-  userName: String,
-}
-type Query {
-  signout: String
-  check: String
-}
-type Mutation {
-  signUp(input: signUpInput): signUpType
-  signIn(input: signInInput ): signInType
-}
-`;  // const typeDefs = loadSchemaSync(path.join(__dirname, './schema.graphql'));
 
 const server = new ApolloServer({ 
   typeDefs, 
   resolvers, 
   tracing: true, 
-  context: ({ req }) => {
+  context: ({ req, res }) => {
     return {
-      req
+      req, res
     };
   } 
 });
 server.applyMiddleware({ app });
 
-// app.use(
-//   "/graphql",
-//   bodyParser.json(),
-//   (req, _, next) => {
-//     console.log(req.session);
-//     return next();
-//   },
-//   graphqlExpress(req => ({
-//     schema,
-//     context: { req }
-//   }))
-// );
-
-// app.use('/graphql', graphqlHTTP({
-//   graphiql: true,
-//   schema,
-//   rootValue: root
-// })) // GraphQL
 app.use('/auth', authRouter);
 app.use('/content', contentRouter);
 

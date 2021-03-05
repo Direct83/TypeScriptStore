@@ -1,7 +1,3 @@
-var __makeTemplateObject = (this && this.__makeTemplateObject) || function (cooked, raw) {
-    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
-    return cooked;
-};
 var _a;
 import express from 'express';
 import session from 'express-session';
@@ -60,42 +56,21 @@ app.use(session({
 }));
 // GraphQL
 import { resolvers } from './types/resolvers.js';
-// import * as bodyParser from "body-parser";
-// import * as path from "path";
-// import { loadSchemaSync } from '@graphql-tools/load'; // the same as import { importSchema } from 'graphql-import';
-import { ApolloServer, gql } from 'apollo-server-express';
-var typeDefs = gql(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\ntype signUpType {\n  userId: String,\n  name: String,\n  password: String,\n  email: String,\n  message: String,\n}\ninput signUpInput {\n  userId: String,\n  name: String, \n  password: String, \n  email: String,\n  message: String,\n}\ntype signInType {\n  userId: String,\n  name: String, \n  password: String,\n  email: String\n  message: String,\n  userName: String,\n}\ninput signInInput {\n  userId: String,\n  name: String, \n  password: String, \n  email: String,\n  message: String,\n  userName: String,\n}\ntype Query {\n  signout: String\n  check: String\n}\ntype Mutation {\n  signUp(input: signUpInput): signUpType\n  signIn(input: signInInput ): signInType\n}\n"], ["\ntype signUpType {\n  userId: String,\n  name: String,\n  password: String,\n  email: String,\n  message: String,\n}\ninput signUpInput {\n  userId: String,\n  name: String, \n  password: String, \n  email: String,\n  message: String,\n}\ntype signInType {\n  userId: String,\n  name: String, \n  password: String,\n  email: String\n  message: String,\n  userName: String,\n}\ninput signInInput {\n  userId: String,\n  name: String, \n  password: String, \n  email: String,\n  message: String,\n  userName: String,\n}\ntype Query {\n  signout: String\n  check: String\n}\ntype Mutation {\n  signUp(input: signUpInput): signUpType\n  signIn(input: signInInput ): signInType\n}\n"]))); // const typeDefs = loadSchemaSync(path.join(__dirname, './schema.graphql'));
+import { ApolloServer } from 'apollo-server-express';
+import { typeDefs } from './types/typeDefs.js';
 var server = new ApolloServer({
     typeDefs: typeDefs,
     resolvers: resolvers,
     tracing: true,
     context: function (_a) {
-        var req = _a.req;
+        var req = _a.req, res = _a.res;
         return {
-            req: req
+            req: req, res: res
         };
     }
 });
 server.applyMiddleware({ app: app });
-// app.use(
-//   "/graphql",
-//   bodyParser.json(),
-//   (req, _, next) => {
-//     console.log(req.session);
-//     return next();
-//   },
-//   graphqlExpress(req => ({
-//     schema,
-//     context: { req }
-//   }))
-// );
-// app.use('/graphql', graphqlHTTP({
-//   graphiql: true,
-//   schema,
-//   rootValue: root
-// })) // GraphQL
 app.use('/auth', authRouter);
 app.use('/content', contentRouter);
 app.use(notFoundMiddleware);
 var port = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 3100;
-var templateObject_1;

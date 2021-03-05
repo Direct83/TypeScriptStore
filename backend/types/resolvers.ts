@@ -24,18 +24,22 @@ interface ResolverMap {
 
 export const resolvers: ResolverMap = {
   Query: {
-    signout: (_, __, { req, res, next }) => {
-      req.session.destroy((err:any) => {
-        if (err) return next(err);
-        res.clearCookie('sid');
-        return res.redirect('/');
-      });
+    signout: async (_, __, { req, res, next }) => {
+      // console.log('начало');
+      // await req.session.destroy((err:any) => {
+      //   // if (err) return next(err);
+      //   console.log('до куки');
+      //   res.clearCookie('sid');
+      //   console.log('после куки');
+      //   console.log('до ретурт');
+      // });
+      return { message: 'Вы успушно вышли из системы' };
     },
     check: (_, __, { req }) => {
       if (req.session.user) {
         return { ...req.session.user }
       } else {
-        return "Could not find cookie :(";
+        return { message: "Could not find cookie :(" };
       }
     }
   },
@@ -58,7 +62,8 @@ export const resolvers: ResolverMap = {
     }
     },
     signIn: async (_, args, { req }) => {
-      const { name, password } = args;
+      console.log('args.input', args.input)
+      const { name, password } = args.input;
       try {
         const user = await UserModel.findOne({ name }).exec();
         if (!user) {
