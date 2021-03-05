@@ -49,7 +49,7 @@ import { UserModel } from '../models/user.model.js';
 import bcrypt from 'bcrypt';
 export var resolvers = {
     Query: {
-        signout: function (_, __, _a) {
+        signOut: function (_, __, _a) {
             var req = _a.req, res = _a.res, next = _a.next;
             return __awaiter(void 0, void 0, void 0, function () {
                 return __generator(this, function (_b) {
@@ -84,6 +84,7 @@ export var resolvers = {
                     switch (_c.label) {
                         case 0:
                             _b = args.input, name = _b.name, password = _b.password, email = _b.email;
+                            console.log('name, password, email', name, password, email);
                             _c.label = 1;
                         case 1:
                             _c.trys.push([1, 4, , 5]);

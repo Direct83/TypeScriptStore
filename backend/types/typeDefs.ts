@@ -34,8 +34,11 @@ input signInInput {
 type signOutType {
   message:String
 }
+type checkType {
+  message:String
+}
 type Query {
-  signout: signOutType
+  signOut: signOutType
   check: String
 }
 type Mutation {

@@ -24,7 +24,7 @@ interface ResolverMap {
 
 export const resolvers: ResolverMap = {
   Query: {
-    signout: async (_, __, { req, res, next }) => {
+    signOut: async (_, __, { req, res, next }) => {
       // console.log('начало');
       // await req.session.destroy((err:any) => {
       //   // if (err) return next(err);
@@ -46,6 +46,7 @@ export const resolvers: ResolverMap = {
   Mutation: {
     signUp: async (_, args, { req }) => {
       const { name, password, email } = args.input; 
+      console.log('name, password, email', name, password, email)
       try {
         const hashedPassword = await bcrypt.hash(password, 10);
         const user: UserModelType = await UserModel.create({

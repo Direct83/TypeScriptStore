@@ -8,16 +8,14 @@ import { useQuery, gql, useMutation } from '@apollo/client';
 // import { SIGNUP_GRAPH } from '../query/user';
 
 const SIGNUP_GRAPH: any = gql`
-  mutation {
-    signUp(
-      input: { name: "Serg8", email: "serge@cloude.com", password: "1234" } 
-    ) {
-      name
-      userId
-      password
-      email
-    }
+mutation ($name: String, $email: String, $password: String){
+  signUp(input: { name: $name, email: $email, password: $password }) {
+    name,
+    userId,
+    password,
+    email,
   }
+}
 `;
 
 const SIGNOUT_GRAPH: any = gql`
@@ -27,15 +25,19 @@ query {
   }
 }
 `;
+interface AuthDataType {
+  name: string,
+  email: string,
+  password: string,
+}
 
 export default function SignUp() {
   // const { loading, error, data } = useQuery(SIGNOUT_GRAPH);
-  const [test, { data }] = useMutation(SIGNUP_GRAPH);
-  console.log('test', test)
-  console.log('data', data)
+  const [signUp, { loading, error, data }] = useMutation(SIGNUP_GRAPH);
+  // console.log('data', data?.signOut?.message)
   const { isAuth } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
-  const [authData, setAuthData] = useState({
+  const [authData, setAuthData] = useState<AuthDataType>({
     name: '',
     email: '',
     password: '',
@@ -49,7 +51,7 @@ export default function SignUp() {
   };
   const signUpHandler = async () => {
     const path = 'signup';
-    
+    signUp({variables: authData}).then(console.log)
     console.log('authData:%s, data:%s', authData, data)
     // dispatch(authFetchSaga(authData, path));
   };
