@@ -8,16 +8,24 @@ import HomePage from './pages/HomePage';
 import NavBar from './components/NavBar';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
-import { checkAuth } from './redux/auth/actions';
+import { checkAuth, signInUser } from './redux/auth/actions';
+import { useQuery } from '@apollo/client';
+import { CHECK_GRAPH } from './query/user'
 
 function App() {
   // const stateCheck = useSelector((state) => state);
   // console.log(stateCheck);
   const dispatch = useDispatch();
 
+  // useEffect(() => {
+  //   dispatch(checkAuth());
+  // }, [dispatch]);
+
+  const {data} = useQuery(CHECK_GRAPH)
   useEffect(() => {
-    dispatch(checkAuth());
-  }, [dispatch]);
+    dispatch(signInUser(data?.check?.userId, data?.check?.userName))
+  }, [])
+  
   return (
     <BrowserRouter>
       <NavBar />

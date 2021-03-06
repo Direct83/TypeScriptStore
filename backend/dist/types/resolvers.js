@@ -84,6 +84,7 @@ export var resolvers = {
                     switch (_c.label) {
                         case 0:
                             _b = args.input, name = _b.name, password = _b.password, email = _b.email;
+                            console.log('SIGNUP!!!!');
                             console.log('name, password, email', name, password, email);
                             _c.label = 1;
                         case 1:
@@ -101,7 +102,7 @@ export var resolvers = {
                             console.log('user!!!!', user);
                             req.session.user = { userId: user.id, userName: user.name };
                             console.log('req.session.user', req.session.user, user.name, user.id);
-                            return [2 /*return*/, { userId: user.id, name: user.name, }];
+                            return [2 /*return*/, { userId: user.id, userName: user.name, }];
                         case 4:
                             error_1 = _c.sent();
                             return [2 /*return*/, { message: "все не ок", error: error_1.message }];
@@ -118,6 +119,7 @@ export var resolvers = {
                     switch (_c.label) {
                         case 0:
                             console.log('args.input', args.input);
+                            console.log('SIGNIN!!!!');
                             _b = args.input, name = _b.name, password = _b.password;
                             _c.label = 1;
                         case 1:

@@ -3,6 +3,7 @@ import { ApolloServer, gql }  from 'apollo-server-express';
 export const typeDefs = gql`
 type signUpType {
   userId: String,
+  userName: String,
   name: String,
   password: String,
   email: String,
@@ -10,6 +11,7 @@ type signUpType {
 }
 input signUpInput {
   userId: String,
+  userName: String,
   name: String, 
   password: String, 
   email: String,
@@ -31,15 +33,14 @@ input signInInput {
   message: String,
   userName: String,
 }
-type signOutType {
-  message:String
-}
-type checkType {
-  message:String
+type Message {
+  message:String,
+  userId: String, 
+  userName: String,
 }
 type Query {
-  signOut: signOutType
-  check: String
+  signOut: Message
+  check: Message
 }
 type Mutation {
   signUp(input: signUpInput): signUpType

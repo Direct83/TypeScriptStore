@@ -1,30 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { authFetchSaga } from '../redux/auth/actions';
+import { authFetchSaga, signInUser } from '../redux/auth/actions';
 import { RootState } from '../redux/store'
 
 import { useQuery, gql, useMutation } from '@apollo/client';
-// import { SIGNUP_GRAPH } from '../query/user';
+import { SIGNUP_GRAPH } from '../query/user';
 
-const SIGNUP_GRAPH: any = gql`
-mutation ($name: String, $email: String, $password: String){
-  signUp(input: { name: $name, email: $email, password: $password }) {
-    name,
-    userId,
-    password,
-    email,
-  }
-}
-`;
-
-const SIGNOUT_GRAPH: any = gql`
-query {
-  signout {
-    message
-  }
-}
-`;
 interface AuthDataType {
   name: string,
   email: string,
@@ -32,11 +14,10 @@ interface AuthDataType {
 }
 
 export default function SignUp() {
-  // const { loading, error, data } = useQuery(SIGNOUT_GRAPH);
-  const [signUp, { loading, error, data }] = useMutation(SIGNUP_GRAPH);
-  // console.log('data', data?.signOut?.message)
+  const [signUp] = useMutation(SIGNUP_GRAPH);
+
   const { isAuth } = useSelector((state: RootState) => state.auth);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [authData, setAuthData] = useState<AuthDataType>({
     name: '',
     email: '',
@@ -50,9 +31,9 @@ export default function SignUp() {
     }));
   };
   const signUpHandler = async () => {
-    const path = 'signup';
-    signUp({variables: authData}).then(console.log)
-    console.log('authData:%s, data:%s', authData, data)
+    const {data} = await signUp({ variables: authData })
+    signInUser(data?.signUp?.userId, data?.signUp?.userName)
+    // const path = 'signup';
     // dispatch(authFetchSaga(authData, path));
   };
 

@@ -46,6 +46,7 @@ export const resolvers: ResolverMap = {
   Mutation: {
     signUp: async (_, args, { req }) => {
       const { name, password, email } = args.input; 
+      console.log('SIGNUP!!!!');
       console.log('name, password, email', name, password, email)
       try {
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -57,13 +58,14 @@ export const resolvers: ResolverMap = {
         console.log('user!!!!', user)
         req.session.user = { userId: user.id, userName: user.name }
         console.log('req.session.user', req.session.user, user.name, user.id)
-        return { userId: user.id, name: user.name, }
+        return { userId: user.id, userName: user.name, }
       } catch (error) {
         return { message: "все не ок", error: error.message }
     }
     },
     signIn: async (_, args, { req }) => {
       console.log('args.input', args.input)
+      console.log('SIGNIN!!!!');
       const { name, password } = args.input;
       try {
         const user = await UserModel.findOne({ name }).exec();
