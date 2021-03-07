@@ -1,15 +1,14 @@
 import express from 'express';
 import session from 'express-session'
 import cors from 'cors';
-import authRouter from './routes/auth.js'
-import contentRouter from './routes/content.js'
 import connectMongo from "connect-mongo";
-
-
-
-import notFoundMiddleware from './middlewares/notfound404.js';
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import { ApolloServer } from 'apollo-server-express';
+import contentRouter from './routes/content.js'
+import { resolvers } from './types/resolvers.js'
+import { typeDefs } from './types/typeDefs.js'
+import notFoundMiddleware from './middlewares/notfound404.js';
 dotenv.config();
 
 mongoose.connect(process.env.DB_PATH as string, {
@@ -74,26 +73,18 @@ app.use(
   }),
 );
 
-// GraphQL
-
-import {resolvers} from './types/resolvers.js'
-import { ApolloServer }  from 'apollo-server-express';
-import { typeDefs } from './types/typeDefs.js'
-
-
-const server = new ApolloServer({ 
-  typeDefs, 
-  resolvers, 
-  tracing: true, 
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  tracing: true,
   context: ({ req, res }) => {
     return {
       req, res
     };
-  } 
+  }
 });
 server.applyMiddleware({ app });
 
-app.use('/auth', authRouter);
 app.use('/content', contentRouter);
 
 app.use(notFoundMiddleware);

@@ -9,7 +9,7 @@ export default function HomePage() {
   const { serverData, loading } = useSelector((state: RootState) => state.content);
   const dispatch = useDispatch();
   const loadServerText = () => {
-    dispatch(loadServerDataSaga(333));
+    dispatch(loadServerDataSaga());
   };
   return (
     <>

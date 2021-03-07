@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AuthPage from './pages/AuthPage';
 import FirstPage from './pages/FirstPage';
 import SecondPage from './pages/SecondPage';
@@ -8,24 +8,20 @@ import HomePage from './pages/HomePage';
 import NavBar from './components/NavBar';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
-import { checkAuth, signInUser } from './redux/auth/actions';
+import { signInUser } from './redux/auth/actions';
 import { useQuery } from '@apollo/client';
 import { CHECK_GRAPH } from './query/user'
 
-function App() {
+export default function App() {
   // const stateCheck = useSelector((state) => state);
-  // console.log(stateCheck);
+  // console.log('reduxApp', stateCheck);
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(checkAuth());
-  // }, [dispatch]);
-
-  const {data} = useQuery(CHECK_GRAPH)
+  const { data } = useQuery(CHECK_GRAPH)
   useEffect(() => {
-    dispatch(signInUser(data?.check?.userId, data?.check?.userName))
-  }, [])
-  
+    if (data?.check?.userId && data?.check?.userName) {
+      dispatch(signInUser(data.check.userId, data.check.userName))
+    }
+  }, [data])
   return (
     <BrowserRouter>
       <NavBar />
@@ -41,5 +37,3 @@ function App() {
     </BrowserRouter>
   );
 }
-
-export default App;

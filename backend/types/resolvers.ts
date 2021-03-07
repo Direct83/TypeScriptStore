@@ -1,21 +1,8 @@
-import {UserModel, UserModelType} from '../models/user.model.js'
+import { UserModel, UserModelType } from '../models/user.model.js'
 import bcrypt from 'bcrypt';
 
-// interface SignUpUserInput {
-//   input: {
-//     name: string,
-//     password: string,
-//     email: string,
-//   }
-// }
-// interface SignInUserInput {
-//   input: {
-//     name: string,
-//     password: string,
-//   }
-// }
-
 type Resolver = (parent: any, args: any, context: any, info: any) => any;
+
 interface ResolverMap {
   [key: string]: {
     [key: string]: Resolver;
@@ -24,17 +11,6 @@ interface ResolverMap {
 
 export const resolvers: ResolverMap = {
   Query: {
-    signOut: async (_, __, { req, res, next }) => {
-      // console.log('начало');
-      // await req.session.destroy((err:any) => {
-      //   // if (err) return next(err);
-      //   console.log('до куки');
-      //   res.clearCookie('sid');
-      //   console.log('после куки');
-      //   console.log('до ретурт');
-      // });
-      return { message: 'Вы успушно вышли из системы' };
-    },
     check: (_, __, { req }) => {
       if (req.session.user) {
         return { ...req.session.user }
@@ -44,10 +20,17 @@ export const resolvers: ResolverMap = {
     }
   },
   Mutation: {
+    signOut: async (_, __, { req, res, next }) => {
+      try {
+        req.session.destroy();
+        res.clearCookie('sid');
+      } catch (error) {
+        return { message: 'Ошибка выхода' }
+      }
+      return { message: 'Вы успeшно вышли из системы' };
+    },
     signUp: async (_, args, { req }) => {
-      const { name, password, email } = args.input; 
-      console.log('SIGNUP!!!!');
-      console.log('name, password, email', name, password, email)
+      const { name, password, email } = args.input;
       try {
         const hashedPassword = await bcrypt.hash(password, 10);
         const user: UserModelType = await UserModel.create({
@@ -55,17 +38,13 @@ export const resolvers: ResolverMap = {
           email,
           password: hashedPassword,
         })
-        console.log('user!!!!', user)
         req.session.user = { userId: user.id, userName: user.name }
-        console.log('req.session.user', req.session.user, user.name, user.id)
         return { userId: user.id, userName: user.name, }
       } catch (error) {
         return { message: "все не ок", error: error.message }
-    }
+      }
     },
     signIn: async (_, args, { req }) => {
-      console.log('args.input', args.input)
-      console.log('SIGNIN!!!!');
       const { name, password } = args.input;
       try {
         const user = await UserModel.findOne({ name }).exec();

@@ -2,12 +2,14 @@ var _a;
 import express from 'express';
 import session from 'express-session';
 import cors from 'cors';
-import authRouter from './routes/auth.js';
-import contentRouter from './routes/content.js';
 import connectMongo from "connect-mongo";
-import notFoundMiddleware from './middlewares/notfound404.js';
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import { ApolloServer } from 'apollo-server-express';
+import contentRouter from './routes/content.js';
+import { resolvers } from './types/resolvers.js';
+import { typeDefs } from './types/typeDefs.js';
+import notFoundMiddleware from './middlewares/notfound404.js';
 dotenv.config();
 mongoose.connect(process.env.DB_PATH, {
     useNewUrlParser: true,
@@ -54,10 +56,6 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24 * 365,
     },
 }));
-// GraphQL
-import { resolvers } from './types/resolvers.js';
-import { ApolloServer } from 'apollo-server-express';
-import { typeDefs } from './types/typeDefs.js';
 var server = new ApolloServer({
     typeDefs: typeDefs,
     resolvers: resolvers,
@@ -70,7 +68,6 @@ var server = new ApolloServer({
     }
 });
 server.applyMiddleware({ app: app });
-app.use('/auth', authRouter);
 app.use('/content', contentRouter);
 app.use(notFoundMiddleware);
 var port = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 3100;

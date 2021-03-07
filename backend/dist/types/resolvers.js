@@ -49,22 +49,6 @@ import { UserModel } from '../models/user.model.js';
 import bcrypt from 'bcrypt';
 export var resolvers = {
     Query: {
-        signOut: function (_, __, _a) {
-            var req = _a.req, res = _a.res, next = _a.next;
-            return __awaiter(void 0, void 0, void 0, function () {
-                return __generator(this, function (_b) {
-                    // console.log('начало');
-                    // await req.session.destroy((err:any) => {
-                    //   // if (err) return next(err);
-                    //   console.log('до куки');
-                    //   res.clearCookie('sid');
-                    //   console.log('после куки');
-                    //   console.log('до ретурт');
-                    // });
-                    return [2 /*return*/, { message: 'Вы успушно вышли из системы' }];
-                });
-            });
-        },
         check: function (_, __, _a) {
             var req = _a.req;
             if (req.session.user) {
@@ -76,6 +60,21 @@ export var resolvers = {
         }
     },
     Mutation: {
+        signOut: function (_, __, _a) {
+            var req = _a.req, res = _a.res, next = _a.next;
+            return __awaiter(void 0, void 0, void 0, function () {
+                return __generator(this, function (_b) {
+                    try {
+                        req.session.destroy();
+                        res.clearCookie('sid');
+                    }
+                    catch (error) {
+                        return [2 /*return*/, { message: 'Ошибка выхода' }];
+                    }
+                    return [2 /*return*/, { message: 'Вы успeшно вышли из системы' }];
+                });
+            });
+        },
         signUp: function (_, args, _a) {
             var req = _a.req;
             return __awaiter(void 0, void 0, void 0, function () {
@@ -84,8 +83,6 @@ export var resolvers = {
                     switch (_c.label) {
                         case 0:
                             _b = args.input, name = _b.name, password = _b.password, email = _b.email;
-                            console.log('SIGNUP!!!!');
-                            console.log('name, password, email', name, password, email);
                             _c.label = 1;
                         case 1:
                             _c.trys.push([1, 4, , 5]);
@@ -99,9 +96,7 @@ export var resolvers = {
                                 })];
                         case 3:
                             user = _c.sent();
-                            console.log('user!!!!', user);
                             req.session.user = { userId: user.id, userName: user.name };
-                            console.log('req.session.user', req.session.user, user.name, user.id);
                             return [2 /*return*/, { userId: user.id, userName: user.name, }];
                         case 4:
                             error_1 = _c.sent();
@@ -118,8 +113,6 @@ export var resolvers = {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            console.log('args.input', args.input);
-                            console.log('SIGNIN!!!!');
                             _b = args.input, name = _b.name, password = _b.password;
                             _c.label = 1;
                         case 1:

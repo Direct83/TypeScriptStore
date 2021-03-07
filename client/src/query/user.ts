@@ -1,11 +1,11 @@
 import { gql } from '@apollo/client';
 
 export const SIGNUP_GRAPH: any = gql`
-  mutation {
+  mutation ($name: String $password: String $email: String){
     signUp(
-      input: { name: "Serg8", email: "serge@cloude.com", password: "1234" }
+      input: { name: $name, , password: $password, email: $email }
     ) {
-      name
+      userName
       userId
       password
       email
@@ -13,31 +13,27 @@ export const SIGNUP_GRAPH: any = gql`
     }
   }
 `;
-
 export const SIGNIN_GRAPH: any = gql`
 mutation ($name: String $password: String){
   signIn(input: { name: $name, password: $password }) {
-    name,
+    userName,
     userId,
     password,
     email,
-    userName,
     message
   }
 }
 `;
-
 export const CHECK_GRAPH: any = gql`
 query {
   check {
-    message
+    message, userId, userName
   }
 }
 `;
-
 export const SIGNOUT_GRAPH: any = gql`
-query {
-  signout {
+mutation($message: String) {
+  signOut(input:{message: $message}) {
     message
   }
 }

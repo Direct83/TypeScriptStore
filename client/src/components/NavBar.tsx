@@ -1,22 +1,21 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logOutUser } from '../redux/auth/actions';
 import { RootState } from '../redux/store'
-// import { useQuery } from '@apollo/client';
-// import { SIGNOUT_GRAPH } from '../query/user';
+import { useMutation } from '@apollo/client';
+import { SIGNOUT_GRAPH } from '../query/user';
 
 export default function Navbar() {
+  const [singOut] = useMutation(SIGNOUT_GRAPH)
   const { isAuth } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const logout = async () => {
-    await fetch('auth/signout');
-    dispatch(logOutUser());
-    // App. logout().then(() => client.resetStore());
+    const { data } = await singOut({ variables: { message: "закончить сессию" } })
+    if (data.signOut.message === 'Вы успeшно вышли из системы') {
+      dispatch(logOutUser())
+    }
   };
-  // useEffect(() => {
-  //   const {data, client} = useQuery(SIGNOUT_GRAPH)
-  // }, [])
-
   return (
     <nav className="nav-item">
       <Link className="navWords" to="/">Home</Link>

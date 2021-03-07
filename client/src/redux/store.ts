@@ -19,5 +19,4 @@ export const store = createStore(
   )),
 );
 saga.run(rootSagas);
-
 export type RootState = ReturnType<typeof rootReducer>

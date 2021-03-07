@@ -1,4 +1,4 @@
-import { ApolloServer, gql }  from 'apollo-server-express';
+import { gql } from 'apollo-server-express';
 
 export const typeDefs = gql`
 type signUpType {
@@ -12,14 +12,14 @@ type signUpType {
 input signUpInput {
   userId: String,
   userName: String,
-  name: String, 
-  password: String, 
+  name: String,
+  password: String,
   email: String,
   message: String,
 }
 type signInType {
   userId: String,
-  name: String, 
+  name: String,
   password: String,
   email: String
   message: String,
@@ -27,23 +27,26 @@ type signInType {
 }
 input signInInput {
   userId: String,
-  name: String, 
-  password: String, 
+  name: String,
+  password: String,
   email: String,
   message: String,
   userName: String,
 }
+input signOut {
+  message: String
+}
 type Message {
   message:String,
-  userId: String, 
+  userId: String,
   userName: String,
 }
 type Query {
-  signOut: Message
   check: Message
 }
 type Mutation {
   signUp(input: signUpInput): signUpType
   signIn(input: signInInput ): signInType
+  signOut(input: signOut): signInType
 }
-`;  // const typeDefs = loadSchemaSync(path.join(__dirname, './schema.graphql'));
+`;
