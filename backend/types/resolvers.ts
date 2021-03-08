@@ -1,6 +1,7 @@
 import { UserModel, UserModelType } from '../models/user.model.js'
 import bcrypt from 'bcrypt';
 import { userModel } from '../db/models/models.js';
+import { DataType } from 'sequelize'
 
 type Resolver = (parent: any, args: any, context: any, info: any) => any;
 
@@ -9,7 +10,16 @@ interface ResolverMap {
     [key: string]: Resolver;
   };
 }
-
+interface PostgreSQLType {
+  dataValues: {
+    id: number,
+    name: string,
+    email: string,
+    password: string,
+    createdAt?: Date,
+    updatedAt?: Date
+  }
+}
 export const resolvers: ResolverMap = {
   Query: {
     check: (_, __, { req }) => {
@@ -34,14 +44,13 @@ export const resolvers: ResolverMap = {
       const { name, password, email } = args.input;
       try {
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user: any = await userModel.create({
+        const user = await userModel.create({
           name,
           email,
           password: hashedPassword,
         })
-        console.log('userObj signUp:', user)
-        req.session.user = { userId: user.id, userName: user.name }
-        return { userId: user.id, userName: user.name, }
+        req.session.user = { userId: user.getDataValue('id'), userName: user.getDataValue('name') }
+        return { userId: user.getDataValue('id'), userName: user.getDataValue('name'), }
       } catch (error) {
         return { message: "все не ок", error: error.message }
       }
@@ -49,16 +58,20 @@ export const resolvers: ResolverMap = {
     signIn: async (_, args, { req }) => {
       const { name, password } = args.input;
       try {
-        const user = await UserModel.findOne({ name }).exec();
-        if (!user) {
-          return { message: 'все не ок c Именем' }
+        const user = await userModel.findOne({ where: { name } });
+        if (user) {
+          const passwordString = String(user.getDataValue('password'));
+
+          if (!user) {
+            return { message: 'все не ок c Именем' }
+          }
+          const isValidPassword = await bcrypt.compare(password, passwordString);
+          if (!isValidPassword) {
+            return { message: 'все не ок c Паролем' }
+          }
+          req.session.user = { userId: user.getDataValue('id'), userName: user.getDataValue('name') };
+          return { userId: user.getDataValue('id'), userName: user.getDataValue('name') }
         }
-        const isValidPassword = await bcrypt.compare(password, user.password);
-        if (!isValidPassword) {
-          return { message: 'все не ок c Паролем' }
-        }
-        req.session.user = { userId: user.id, userName: user.name };
-        return { userId: user.id, userName: user.name }
       } catch (error) {
         return { message: "все не ок", error: error.message }
       }

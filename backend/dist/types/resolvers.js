@@ -45,7 +45,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { UserModel } from '../models/user.model.js';
 import bcrypt from 'bcrypt';
 import { userModel } from '../db/models/models.js';
 export var resolvers = {
@@ -97,9 +96,8 @@ export var resolvers = {
                                 })];
                         case 3:
                             user = _c.sent();
-                            console.log('userObj signUp:', user);
-                            req.session.user = { userId: user.id, userName: user.name };
-                            return [2 /*return*/, { userId: user.id, userName: user.name, }];
+                            req.session.user = { userId: user.getDataValue('id'), userName: user.getDataValue('name') };
+                            return [2 /*return*/, { userId: user.getDataValue('id'), userName: user.getDataValue('name'), }];
                         case 4:
                             error_1 = _c.sent();
                             return [2 /*return*/, { message: "все не ок", error: error_1.message }];
@@ -111,32 +109,35 @@ export var resolvers = {
         signIn: function (_, args, _a) {
             var req = _a.req;
             return __awaiter(void 0, void 0, void 0, function () {
-                var _b, name, password, user, isValidPassword, error_2;
+                var _b, name, password, user, passwordString, isValidPassword, error_2;
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
                             _b = args.input, name = _b.name, password = _b.password;
                             _c.label = 1;
                         case 1:
-                            _c.trys.push([1, 4, , 5]);
-                            return [4 /*yield*/, UserModel.findOne({ name: name }).exec()];
+                            _c.trys.push([1, 5, , 6]);
+                            return [4 /*yield*/, userModel.findOne({ where: { name: name } })];
                         case 2:
                             user = _c.sent();
+                            if (!user) return [3 /*break*/, 4];
+                            passwordString = String(user.getDataValue('password'));
                             if (!user) {
                                 return [2 /*return*/, { message: 'все не ок c Именем' }];
                             }
-                            return [4 /*yield*/, bcrypt.compare(password, user.password)];
+                            return [4 /*yield*/, bcrypt.compare(password, passwordString)];
                         case 3:
                             isValidPassword = _c.sent();
                             if (!isValidPassword) {
                                 return [2 /*return*/, { message: 'все не ок c Паролем' }];
                             }
-                            req.session.user = { userId: user.id, userName: user.name };
-                            return [2 /*return*/, { userId: user.id, userName: user.name }];
-                        case 4:
+                            req.session.user = { userId: user.getDataValue('id'), userName: user.getDataValue('name') };
+                            return [2 /*return*/, { userId: user.getDataValue('id'), userName: user.getDataValue('name') }];
+                        case 4: return [3 /*break*/, 6];
+                        case 5:
                             error_2 = _c.sent();
                             return [2 /*return*/, { message: "все не ок", error: error_2.message }];
-                        case 5: return [2 /*return*/];
+                        case 6: return [2 /*return*/];
                     }
                 });
             });
