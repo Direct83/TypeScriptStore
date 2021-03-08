@@ -10,6 +10,7 @@ import contentRouter from './routes/content.js';
 import { resolvers } from './types/resolvers.js';
 import { typeDefs } from './types/typeDefs.js';
 import notFoundMiddleware from './middlewares/notfound404.js';
+import './db/index.js';
 dotenv.config();
 mongoose.connect(process.env.DB_PATH, {
     useNewUrlParser: true,

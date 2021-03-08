@@ -1,5 +1,6 @@
 import { UserModel, UserModelType } from '../models/user.model.js'
 import bcrypt from 'bcrypt';
+import { userModel } from '../db/models/models.js';
 
 type Resolver = (parent: any, args: any, context: any, info: any) => any;
 
@@ -33,11 +34,12 @@ export const resolvers: ResolverMap = {
       const { name, password, email } = args.input;
       try {
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user: UserModelType = await UserModel.create({
+        const user: any = await userModel.create({
           name,
           email,
           password: hashedPassword,
         })
+        console.log('userObj signUp:', user)
         req.session.user = { userId: user.id, userName: user.name }
         return { userId: user.id, userName: user.name, }
       } catch (error) {

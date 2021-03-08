@@ -47,6 +47,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import { UserModel } from '../models/user.model.js';
 import bcrypt from 'bcrypt';
+import { userModel } from '../db/models/models.js';
 export var resolvers = {
     Query: {
         check: function (_, __, _a) {
@@ -89,13 +90,14 @@ export var resolvers = {
                             return [4 /*yield*/, bcrypt.hash(password, 10)];
                         case 2:
                             hashedPassword = _c.sent();
-                            return [4 /*yield*/, UserModel.create({
+                            return [4 /*yield*/, userModel.create({
                                     name: name,
                                     email: email,
                                     password: hashedPassword,
                                 })];
                         case 3:
                             user = _c.sent();
+                            console.log('userObj signUp:', user);
                             req.session.user = { userId: user.id, userName: user.name };
                             return [2 /*return*/, { userId: user.id, userName: user.name, }];
                         case 4:
