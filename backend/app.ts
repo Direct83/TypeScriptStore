@@ -10,7 +10,10 @@ import { resolvers } from './types/resolvers.js'
 import { typeDefs } from './types/typeDefs.js'
 import notFoundMiddleware from './middlewares/notfound404.js';
 import './db/index.js'
+import { productModel } from './db/models/models.js';
 dotenv.config();
+
+import seed from './db/models/seed.js'
 
 
 mongoose.connect(process.env.DB_PATH as string, {
@@ -86,6 +89,8 @@ const server = new ApolloServer({
   }
 });
 server.applyMiddleware({ app });
+
+seed()
 
 app.use('/content', contentRouter);
 

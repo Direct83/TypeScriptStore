@@ -1,7 +1,5 @@
-import { UserModel, UserModelType } from '../models/user.model.js'
 import bcrypt from 'bcrypt';
 import { userModel } from '../db/models/models.js';
-import { DataType } from 'sequelize'
 
 type Resolver = (parent: any, args: any, context: any, info: any) => any;
 
@@ -10,16 +8,7 @@ interface ResolverMap {
     [key: string]: Resolver;
   };
 }
-interface PostgreSQLType {
-  dataValues: {
-    id: number,
-    name: string,
-    email: string,
-    password: string,
-    createdAt?: Date,
-    updatedAt?: Date
-  }
-}
+
 export const resolvers: ResolverMap = {
   Query: {
     check: (_, __, { req }) => {
@@ -44,13 +33,17 @@ export const resolvers: ResolverMap = {
       const { name, password, email } = args.input;
       try {
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await userModel.create({
-          name,
-          email,
-          password: hashedPassword,
-        })
-        req.session.user = { userId: user.getDataValue('id'), userName: user.getDataValue('name') }
-        return { userId: user.getDataValue('id'), userName: user.getDataValue('name'), }
+        const userFind = await userModel.findOne({ where: { name } });
+        if (userFind === null) {
+          const user = await userModel.create({
+            name,
+            email,
+            password: hashedPassword,
+          })
+          req.session.user = { userId: user.getDataValue('id'), userName: user.getDataValue('name') }
+          return { userId: user.getDataValue('id'), userName: user.getDataValue('name'), }
+        }
+        return { message: "пользователь уже существует в базе"}
       } catch (error) {
         return { message: "все не ок", error: error.message }
       }

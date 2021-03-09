@@ -20,6 +20,7 @@ export default function SignUp() {
     email: '',
     password: '',
   });
+  const [errMessage, setErrMessage] = useState('')
   const inputHundler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setAuthData((previousAuthData) => ({
@@ -29,11 +30,18 @@ export default function SignUp() {
   };
   const signUpHandler = async () => {
     const { data } = await signUp({ variables: authData })
-    dispatch(signInUser(data.signUp.userId, data.signUp.userName))
+    if (data.signUp.message !== "пользователь уже существует в базе") {
+      dispatch(signInUser(data.signUp.userId, data.signUp.userName))
+    } else {
+      setErrMessage(data.signUp.message)
+    }
   };
   return (
     <>
       {isAuth && <Redirect to="/" />}
+      <div style={{display:'flex', justifyContent:'center'}}>
+      {errMessage ? <h1 style={{color:'red'}}>{errMessage}</h1> : null}
+      </div>
       { !isAuth && (
         <div className="registration">
           <form>

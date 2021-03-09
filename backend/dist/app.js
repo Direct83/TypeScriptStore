@@ -12,6 +12,7 @@ import { typeDefs } from './types/typeDefs.js';
 import notFoundMiddleware from './middlewares/notfound404.js';
 import './db/index.js';
 dotenv.config();
+import seed from './db/models/seed.js';
 mongoose.connect(process.env.DB_PATH, {
     useNewUrlParser: true,
     useCreateIndex: true,
@@ -69,6 +70,7 @@ var server = new ApolloServer({
     }
 });
 server.applyMiddleware({ app: app });
+seed();
 app.use('/content', contentRouter);
 app.use(notFoundMiddleware);
 var port = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 3100;
