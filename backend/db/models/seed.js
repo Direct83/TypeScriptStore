@@ -18,7 +18,7 @@ const productModel = sequelize.define('product', {
     await productModel.create({
       name: faker.commerce.productName(),
       price: +faker.commerce.price(),
-      img: faker.image.fashion(),
+      img: faker.image.fashion() + i,
     });
   }
 })();

@@ -46,7 +46,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import bcrypt from 'bcrypt';
-import { userModel } from '../db/models/models.js';
+import { productModel, userModel } from '../db/models/models.js';
 export var resolvers = {
     Query: {
         check: function (_, __, _a) {
@@ -60,6 +60,23 @@ export var resolvers = {
         }
     },
     Mutation: {
+        getItems: function (_, args, _a) {
+            var req = _a.req, res = _a.res, next = _a.next;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var _b, page, limit, offset, items;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            _b = args.input, page = _b.page, limit = _b.limit;
+                            offset = page * limit - limit;
+                            return [4 /*yield*/, productModel.findAll({ offset: offset, limit: limit, raw: true })];
+                        case 1:
+                            items = _c.sent();
+                            return [2 /*return*/, { items: items }];
+                    }
+                });
+            });
+        },
         signOut: function (_, __, _a) {
             var req = _a.req, res = _a.res, next = _a.next;
             return __awaiter(void 0, void 0, void 0, function () {

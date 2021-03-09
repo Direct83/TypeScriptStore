@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import AuthPage from './pages/AuthPage';
-import FirstPage from './pages/FirstPage';
+import ItemList from './pages/ItemList';
 import SecondPage from './pages/SecondPage';
 import HomePage from './pages/HomePage';
 import NavBar from './components/NavBar';
@@ -27,7 +27,7 @@ export default function App() {
       <NavBar />
       <Switch>
         <Route path="/" exact component={HomePage} />
-        <Route path="/first" exact component={FirstPage} />
+        <Route path="/itemList" exact component={ItemList} />
         <Route path="/second" exact component={SecondPage} />
         <Route path="/auth" exact component={AuthPage} />
         <Route path="/signin" exact component={SignIn} />

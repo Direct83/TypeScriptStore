@@ -18,4 +18,3 @@ export var productModel = sequelize.define('product', {
 });
 basketModel.belongsTo(userModel);
 basketModel.belongsTo(productModel);
-// productModel.hasOne(basketModel)

@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { userModel } from '../db/models/models.js';
+import { productModel, userModel } from '../db/models/models.js';
 
 type Resolver = (parent: any, args: any, context: any, info: any) => any;
 
@@ -20,6 +20,12 @@ export const resolvers: ResolverMap = {
     }
   },
   Mutation: {
+    getItems: async (_, args, { req, res, next }) => {
+      const {page, limit} = args.input
+      const offset= page*limit-limit
+      const items = await productModel.findAll({offset, limit, raw:true})
+      return {items}
+    },
     signOut: async (_, __, { req, res, next }) => {
       try {
         req.session.destroy();
