@@ -88,16 +88,23 @@ export var resolvers = {
                     switch (_b.label) {
                         case 0:
                             userId = args.input.userId;
+                            console.log(userId);
                             return [4 /*yield*/, basketModel.findAll({ where: { userIdModel: userId }, raw: true })];
                         case 1:
                             arrBasket = _b.sent();
                             return [4 /*yield*/, Promise.all(arrBasket.map(function (el) { return __awaiter(void 0, void 0, void 0, function () {
-                                    return __generator(this, function (_a) {
-                                        switch (_a.label) {
-                                            case 0: return [4 /*yield*/, productModel.findOne({
-                                                    where: { id: el.productIdModel }, raw: true
-                                                })];
-                                            case 1: return [2 /*return*/, _a.sent()];
+                                    var _a;
+                                    return __generator(this, function (_b) {
+                                        switch (_b.label) {
+                                            case 0:
+                                                _a = {
+                                                    basketId: el.id
+                                                };
+                                                return [4 /*yield*/, productModel.findOne({
+                                                        where: { id: el.productIdModel }, raw: true
+                                                    })];
+                                            case 1: return [2 /*return*/, (_a.objProduct = _b.sent(),
+                                                    _a)];
                                         }
                                     });
                                 }); }))];
@@ -122,6 +129,22 @@ export var resolvers = {
                                 })];
                         case 1:
                             _c.sent();
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        },
+        delItem: function (_, args, _a) {
+            var req = _a.req, res = _a.res, next = _a.next;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var basketId, basket;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            basketId = args.input.basketId;
+                            return [4 /*yield*/, basketModel.destroy({ where: { id: basketId } })];
+                        case 1:
+                            basket = _b.sent();
                             return [2 /*return*/];
                     }
                 });

@@ -51,9 +51,13 @@ input signInInput {
 input signOut {
   message: String
 }
+type BasketObj {
+  basketId: String,
+  objProduct: itemObj
+}
 type getBasketType {
   message: String,
-  basket: [itemObj],
+  basket: [BasketObj],
 }
 input basket {
   userId: String
@@ -66,19 +70,23 @@ type Message {
 type Query {
   check: Message
 }
-type MessageAddItem {
+type MessageAddDelItem {
   message:String,
 }
 input addItemInput{
   idProd: String,
   userId: String,
 }
+input delItemInput{
+  basketId: String,
+}
 type Mutation {
   signUp(input: signUpInput): signUpType
   signIn(input: signInInput ): signInType
   getItems(input: getItemsInput ): getItemsType
   getBasket(input: basket ): getBasketType
-  addItem(input: addItemInput): MessageAddItem
+  addItem(input: addItemInput): MessageAddDelItem
+  delItem(input: delItemInput): MessageAddDelItem
   signOut(input: signOut): signInType
 }
 `;

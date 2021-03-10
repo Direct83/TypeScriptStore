@@ -5,12 +5,12 @@ mutation ($page: Int $limit: Int){
   getItems(
     input: { page: $page, limit: $limit}
   ) {
-    items { 
+    items {
       id
       name
       price
-      img 
-    } 
+      img
+    }
     itemsLength
     message
   }
@@ -22,10 +22,13 @@ mutation ($userId: String){
     input: { userId: $userId}
   ) {
     basket {
-      id
-      name
-      price
-      img
+      basketId
+      objProduct {
+        id
+        name
+        price
+        img
+      }
     }
     message
   }
@@ -65,6 +68,13 @@ query {
 export const ADD_ITEM_GRAPH: any = gql`
 mutation($idProd:String $userId: String) {
   addItem(input: {idProd: $idProd, userId: $userId}) {
+    message
+  }
+}
+`;
+export const DEL_ITEM_GRAPH: any = gql`
+mutation($basketId: String ) {
+  delItem(input: {basketId: $basketId}) {
     message
   }
 }

@@ -8,7 +8,6 @@ interface ResolverMap {
     [key: string]: Resolver;
   };
 }
-
 export const resolvers: ResolverMap = {
   Query: {
     check: (_, __, { req }) => {
@@ -29,12 +28,13 @@ export const resolvers: ResolverMap = {
     },
     getBasket: async (_, args, { req, res, next }) => {
       const { userId } = args.input
-
+      console.log(userId)
       const arrBasket = await basketModel.findAll({ where: { userIdModel: userId }, raw: true })
-      const basket = await Promise.all(arrBasket.map(async (el: any) => await productModel.findOne({
-        where: { id: el.productIdModel }, raw: true
+      const basket = await Promise.all(arrBasket.map(async (el: any) => ({
+        basketId: el.id, objProduct: await productModel.findOne({
+          where: { id: el.productIdModel }, raw: true
+        })
       })))
-
       return { basket }
     },
     addItem: async (_, args, { req, res, next }) => {
@@ -43,6 +43,10 @@ export const resolvers: ResolverMap = {
         userIdModel: userId,
         productIdModel: idProd,
       })
+    },
+    delItem: async (_, args, { req, res, next }) => {
+      const { basketId } = args.input
+      const basket = await basketModel.destroy({ where: { id: basketId } })
     },
     signOut: async (_, __, { req, res, next }) => {
       try {

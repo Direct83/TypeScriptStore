@@ -18,8 +18,6 @@ export default function ItemList() {
   const [itemsState, setItemsState] = useState<ItemsType[]>([]);
   const [pagination, setPagination] = useState({ page: 1, limit: 6 })
   const [itemsLength, setItemsLength] = useState()
-
-
   useEffect(() => {
     (async () => {
       const { data: { getItems: { items, itemsLength } } }: any = await getItems({ variables: pagination })
@@ -28,9 +26,7 @@ export default function ItemList() {
       setItemsState(items)
     })()
   }, [pagination.page])
-
   const pages = [...Array(itemsLength)].map((e, i) => i + 1)
-
   const clickHandler = async ({ target }: any) => {
     switch (target.innerText) {
       case '«':
@@ -48,9 +44,7 @@ export default function ItemList() {
     }
   }
   const addProd = async (idProd: number) => {
-    console.log('idProd', idProd);
-    const messageAwait = await addItem({ variables: { idProd, userId } })
-    console.log('messageAwait', messageAwait);
+    await addItem({ variables: { idProd, userId } })
   }
   return (
     <>

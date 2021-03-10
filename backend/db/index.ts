@@ -3,7 +3,6 @@ import * as model from './models/models.js'
 import dotenv from "dotenv";
 dotenv.config();
 
-
 (async () => {
   try {
     await sequelize.authenticate();
