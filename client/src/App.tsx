@@ -11,10 +11,12 @@ import SignUp from './components/SignUp';
 import { signInUser } from './redux/auth/actions';
 import { useQuery } from '@apollo/client';
 import { CHECK_GRAPH } from './query/user'
+import { RootState } from './redux/store'
 
 export default function App() {
   // const stateCheck = useSelector((state) => state);
   // console.log('reduxApp', stateCheck);
+  const message = useSelector((state: RootState) => state.auth.message);
   const dispatch = useDispatch();
   const { data } = useQuery(CHECK_GRAPH)
   useEffect(() => {
@@ -26,6 +28,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <NavBar />
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        {message ? message : null}
+      </div>
       <Switch>
         <Route path="/" exact component={HomePage} />
         <Route path="/itemList" exact component={ItemList} />

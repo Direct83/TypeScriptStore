@@ -4,6 +4,7 @@ export enum actionTypes {
   LOADING_PAGE = 'LOADING_PAGE',
   SERVER_DATA = 'SERVER_DATA',
   LOAD_SERVER_DATA = 'LOAD_SERVER_DATA',
+  MESSAGE = 'MESSAGE',
 };
 export interface ResponseAuth {
   userId: string,
@@ -12,11 +13,11 @@ export interface ResponseAuth {
 export interface ResponseServerDataSaga {
   text: string,
 }
-
 export interface AuthReducerIS {
   userId: string,
   userName: string,
   isAuth: boolean,
+  message: string,
 }
 export interface ContentReducerIS {
   serverData: string,
@@ -32,7 +33,10 @@ interface SignInUser {
 interface LogOutUser {
   type: typeof actionTypes.LOGOUT_USER,
 }
-
+interface Message {
+  type: typeof actionTypes.MESSAGE,
+  payload: { mes: string }
+}
 export interface LoadingPage {
   type: typeof actionTypes.LOADING_PAGE,
 }
@@ -41,4 +45,4 @@ export interface ServerData {
   payload: string
 }
 export type ContentActionTypes = LoadingPage | ServerData
-export type AuthActionTypes = SignInUser | LogOutUser
+export type AuthActionTypes = SignInUser | LogOutUser | Message

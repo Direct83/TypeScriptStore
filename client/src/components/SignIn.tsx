@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { signInUser } from '../redux/auth/actions';
+import { signInUser, message } from '../redux/auth/actions';
 import { RootState } from '../redux/store'
 import { useMutation } from '@apollo/client';
 import { SIGNIN_GRAPH } from '../query/user';
@@ -27,6 +27,9 @@ export default function SignIn() {
   };
   const loginHandler = async () => {
     const { data } = await signIn({ variables: authData })
+    if (data.signIn === null) {
+      return dispatch(message('Нет такого пользователя'))
+    }
     dispatch(signInUser(data.signIn.userId, data.signIn.userName))
   };
   return (

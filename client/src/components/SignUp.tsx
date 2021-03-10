@@ -30,7 +30,8 @@ export default function SignUp() {
   };
   const signUpHandler = async () => {
     const { data } = await signUp({ variables: authData })
-    if (data.signUp.message !== "пользователь уже существует в базе") {
+    if (data.signUp.message !== "пользователь уже существует в базе"
+      && data.signUp.message !== 'пользователь c таким email уже существует') {
       dispatch(signInUser(data.signUp.userId, data.signUp.userName))
     } else {
       setErrMessage(data.signUp.message)
@@ -39,8 +40,8 @@ export default function SignUp() {
   return (
     <>
       {isAuth && <Redirect to="/" />}
-      <div style={{display:'flex', justifyContent:'center'}}>
-      {errMessage ? <h1 style={{color:'red'}}>{errMessage}</h1> : null}
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        {errMessage ? <h1 style={{ color: 'red' }}>{errMessage}</h1> : null}
       </div>
       { !isAuth && (
         <div className="registration">

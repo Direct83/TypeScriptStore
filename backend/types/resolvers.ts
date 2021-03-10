@@ -59,10 +59,13 @@ export const resolvers: ResolverMap = {
     },
     signUp: async (_, args, { req }) => {
       const { name, password, email } = args.input;
+      console.log(args.input)
       try {
         const hashedPassword = await bcrypt.hash(password, 10);
         const userFind = await userModel.findOne({ where: { name } });
-        if (userFind === null) {
+        const emailFind = await userModel.findOne({ where: { email } })
+
+        if (userFind === null && emailFind === null) {
           const user = await userModel.create({
             name,
             email,
@@ -71,7 +74,7 @@ export const resolvers: ResolverMap = {
           req.session.user = { userId: user.getDataValue('id'), userName: user.getDataValue('name') }
           return { userId: user.getDataValue('id'), userName: user.getDataValue('name'), }
         }
-        return { message: "пользователь уже существует в базе" }
+        return userFind ? { message: "пользователь уже существует в базе" } : { message: "пользователь c таким email уже существует" }
       } catch (error) {
         return { message: "все не ок", error: error.message }
       }

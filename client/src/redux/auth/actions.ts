@@ -14,3 +14,10 @@ export function logOutUser() {
     type: actionTypes.LOGOUT_USER,
   };
 }
+
+export function message(mes: string) {
+  return {
+    type: actionTypes.MESSAGE,
+    payload: { mes },
+  };
+}

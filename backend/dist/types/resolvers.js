@@ -168,35 +168,39 @@ export var resolvers = {
         signUp: function (_, args, _a) {
             var req = _a.req;
             return __awaiter(void 0, void 0, void 0, function () {
-                var _b, name, password, email, hashedPassword, userFind, user, error_1;
+                var _b, name, password, email, hashedPassword, userFind, emailFind, user, error_1;
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
                             _b = args.input, name = _b.name, password = _b.password, email = _b.email;
+                            console.log(args.input);
                             _c.label = 1;
                         case 1:
-                            _c.trys.push([1, 6, , 7]);
+                            _c.trys.push([1, 7, , 8]);
                             return [4 /*yield*/, bcrypt.hash(password, 10)];
                         case 2:
                             hashedPassword = _c.sent();
                             return [4 /*yield*/, userModel.findOne({ where: { name: name } })];
                         case 3:
                             userFind = _c.sent();
-                            if (!(userFind === null)) return [3 /*break*/, 5];
+                            return [4 /*yield*/, userModel.findOne({ where: { email: email } })];
+                        case 4:
+                            emailFind = _c.sent();
+                            if (!(userFind === null && emailFind === null)) return [3 /*break*/, 6];
                             return [4 /*yield*/, userModel.create({
                                     name: name,
                                     email: email,
                                     password: hashedPassword,
                                 })];
-                        case 4:
+                        case 5:
                             user = _c.sent();
                             req.session.user = { userId: user.getDataValue('id'), userName: user.getDataValue('name') };
                             return [2 /*return*/, { userId: user.getDataValue('id'), userName: user.getDataValue('name'), }];
-                        case 5: return [2 /*return*/, { message: "пользователь уже существует в базе" }];
-                        case 6:
+                        case 6: return [2 /*return*/, userFind ? { message: "пользователь уже существует в базе" } : { message: "пользователь c таким email уже существует" }];
+                        case 7:
                             error_1 = _c.sent();
                             return [2 /*return*/, { message: "все не ок", error: error_1.message }];
-                        case 7: return [2 /*return*/];
+                        case 8: return [2 /*return*/];
                     }
                 });
             });
