@@ -13,7 +13,7 @@ interface ItemsType {
 export default function ItemList() {
   const [getItems] = useMutation(GET_ITEMS_GRAPH);
   const [itemsState, setItemsState] = useState<ItemsType[]>([]);
-  const [pagination, setPagination] = useState({page: 1, limit: 5})
+  const [pagination, setPagination] = useState({page: 1, limit: 6})
   const [itemsLength, setItemsLength] = useState()
 
   useEffect(() => {
