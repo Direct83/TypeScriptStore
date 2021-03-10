@@ -46,7 +46,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import bcrypt from 'bcrypt';
-import { productModel, userModel } from '../db/models/models.js';
+import { productModel, userModel, basketModel } from '../db/models/models.js';
 export var resolvers = {
     Query: {
         check: function (_, __, _a) {
@@ -76,6 +76,53 @@ export var resolvers = {
                         case 2:
                             itemsLength = (_c.sent()).length;
                             return [2 /*return*/, { items: items, itemsLength: itemsLength }];
+                    }
+                });
+            });
+        },
+        getBasket: function (_, args, _a) {
+            var req = _a.req, res = _a.res, next = _a.next;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var userId, arrBasket, basket;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            userId = args.input.userId;
+                            return [4 /*yield*/, basketModel.findAll({ where: { userIdModel: userId }, raw: true })];
+                        case 1:
+                            arrBasket = _b.sent();
+                            return [4 /*yield*/, Promise.all(arrBasket.map(function (el) { return __awaiter(void 0, void 0, void 0, function () {
+                                    return __generator(this, function (_a) {
+                                        switch (_a.label) {
+                                            case 0: return [4 /*yield*/, productModel.findOne({
+                                                    where: { id: el.productIdModel }, raw: true
+                                                })];
+                                            case 1: return [2 /*return*/, _a.sent()];
+                                        }
+                                    });
+                                }); }))];
+                        case 2:
+                            basket = _b.sent();
+                            return [2 /*return*/, { basket: basket }];
+                    }
+                });
+            });
+        },
+        addItem: function (_, args, _a) {
+            var req = _a.req, res = _a.res, next = _a.next;
+            return __awaiter(void 0, void 0, void 0, function () {
+                var _b, idProd, userId;
+                return __generator(this, function (_c) {
+                    switch (_c.label) {
+                        case 0:
+                            _b = args.input, idProd = _b.idProd, userId = _b.userId;
+                            return [4 /*yield*/, basketModel.create({
+                                    userIdModel: userId,
+                                    productIdModel: idProd,
+                                })];
+                        case 1:
+                            _c.sent();
+                            return [2 /*return*/];
                     }
                 });
             });

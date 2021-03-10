@@ -9,6 +9,8 @@ export var userModel = sequelize.define('user', {
 });
 export var basketModel = sequelize.define('basket', {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
+    userIdModel: { type: DataTypes.INTEGER, references: { model: 'users', key: 'id' } },
+    productIdModel: { type: DataTypes.INTEGER, references: { model: 'products', key: 'id' } }
 });
 export var productModel = sequelize.define('product', {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
@@ -16,5 +18,3 @@ export var productModel = sequelize.define('product', {
     price: { type: DataTypes.INTEGER, allowNull: false },
     img: { type: DataTypes.STRING, allowNull: false },
 });
-basketModel.belongsTo(userModel);
-basketModel.belongsTo(productModel);

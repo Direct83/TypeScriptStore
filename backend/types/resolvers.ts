@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { productModel, userModel } from '../db/models/models.js';
+import { productModel, userModel, basketModel } from '../db/models/models.js';
 
 type Resolver = (parent: any, args: any, context: any, info: any) => any;
 
@@ -21,11 +21,28 @@ export const resolvers: ResolverMap = {
   },
   Mutation: {
     getItems: async (_, args, { req, res, next }) => {
-      const {page, limit} = args.input
-      const offset= page*limit-limit
-      const items = await productModel.findAll({offset, limit, raw:true})
-      const itemsLength = (await productModel.findAll({raw:true})).length      
-      return {items, itemsLength}
+      const { page, limit } = args.input
+      const offset = page * limit - limit
+      const items = await productModel.findAll({ offset, limit, raw: true })
+      const itemsLength = (await productModel.findAll({ raw: true })).length
+      return { items, itemsLength }
+    },
+    getBasket: async (_, args, { req, res, next }) => {
+      const { userId } = args.input
+
+      const arrBasket = await basketModel.findAll({ where: { userIdModel: userId }, raw: true })
+      const basket = await Promise.all(arrBasket.map(async (el: any) => await productModel.findOne({
+        where: { id: el.productIdModel }, raw: true
+      })))
+
+      return { basket }
+    },
+    addItem: async (_, args, { req, res, next }) => {
+      const { idProd, userId } = args.input
+      await basketModel.create({
+        userIdModel: userId,
+        productIdModel: idProd,
+      })
     },
     signOut: async (_, __, { req, res, next }) => {
       try {
@@ -50,7 +67,7 @@ export const resolvers: ResolverMap = {
           req.session.user = { userId: user.getDataValue('id'), userName: user.getDataValue('name') }
           return { userId: user.getDataValue('id'), userName: user.getDataValue('name'), }
         }
-        return { message: "пользователь уже существует в базе"}
+        return { message: "пользователь уже существует в базе" }
       } catch (error) {
         return { message: "все не ок", error: error.message }
       }

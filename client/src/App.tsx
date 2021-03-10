@@ -3,7 +3,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import AuthPage from './pages/AuthPage';
 import ItemList from './pages/ItemList';
-import SecondPage from './pages/SecondPage';
+import BasketPage from './pages/Basket';
 import HomePage from './pages/HomePage';
 import NavBar from './components/NavBar';
 import SignIn from './components/SignIn';
@@ -18,6 +18,7 @@ export default function App() {
   const dispatch = useDispatch();
   const { data } = useQuery(CHECK_GRAPH)
   useEffect(() => {
+    console.log('check app', data)
     if (data?.check?.userId && data?.check?.userName) {
       dispatch(signInUser(data.check.userId, data.check.userName))
     }
@@ -28,7 +29,7 @@ export default function App() {
       <Switch>
         <Route path="/" exact component={HomePage} />
         <Route path="/itemList" exact component={ItemList} />
-        <Route path="/second" exact component={SecondPage} />
+        <Route path="/basket" exact component={BasketPage} />
         <Route path="/auth" exact component={AuthPage} />
         <Route path="/signin" exact component={SignIn} />
         <Route path="/signup" exact component={SignUp} />

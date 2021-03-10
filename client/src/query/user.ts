@@ -16,6 +16,21 @@ mutation ($page: Int $limit: Int){
   }
 }
 `;
+export const GET_BASKET_GRAPH: any = gql`
+mutation ($userId: String){
+  getBasket(
+    input: { userId: $userId}
+  ) {
+    basket {
+      id
+      name
+      price
+      img
+    }
+    message
+  }
+}
+`;
 export const SIGNUP_GRAPH: any = gql`
   mutation ($name: String $password: String $email: String){
     signUp(
@@ -44,6 +59,13 @@ export const CHECK_GRAPH: any = gql`
 query {
   check {
     message, userId, userName
+  }
+}
+`;
+export const ADD_ITEM_GRAPH: any = gql`
+mutation($idProd:String $userId: String) {
+  addItem(input: {idProd: $idProd, userId: $userId}) {
+    message
   }
 }
 `;
