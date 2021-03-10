@@ -11,6 +11,7 @@ mutation ($page: Int $limit: Int){
       price
       img 
     } 
+    itemsLength
     message
   }
 }

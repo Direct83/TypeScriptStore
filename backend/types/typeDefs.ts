@@ -10,6 +10,7 @@ type itemObj {
 type getItemsType {
   message: String,
   items: [itemObj],
+  itemsLength: Int,
 }
 input getItemsInput {
   page: Int,

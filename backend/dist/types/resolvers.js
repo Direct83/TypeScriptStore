@@ -63,7 +63,7 @@ export var resolvers = {
         getItems: function (_, args, _a) {
             var req = _a.req, res = _a.res, next = _a.next;
             return __awaiter(void 0, void 0, void 0, function () {
-                var _b, page, limit, offset, items;
+                var _b, page, limit, offset, items, itemsLength;
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
@@ -72,7 +72,10 @@ export var resolvers = {
                             return [4 /*yield*/, productModel.findAll({ offset: offset, limit: limit, raw: true })];
                         case 1:
                             items = _c.sent();
-                            return [2 /*return*/, { items: items }];
+                            return [4 /*yield*/, productModel.findAll({ raw: true })];
+                        case 2:
+                            itemsLength = (_c.sent()).length;
+                            return [2 /*return*/, { items: items, itemsLength: itemsLength }];
                     }
                 });
             });

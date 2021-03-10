@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GET_ITEMS_GRAPH } from '../query/user';
+import './ItemList.scss'
 
 interface ItemsType {
   id: number,
@@ -12,15 +13,36 @@ interface ItemsType {
 export default function ItemList() {
   const [getItems] = useMutation(GET_ITEMS_GRAPH);
   const [itemsState, setItemsState] = useState<ItemsType[]>([]);
+  const [pagination, setPagination] = useState({page: 1, limit: 5})
+  const [itemsLength, setItemsLength] = useState()
 
-  const testHandler = async () => {
-    const { data: { getItems: { items } } }: any = await getItems({ variables: { page: 1, limit: 5 } })
-    console.log(items);
+  useEffect(() => {
+    (async () => {
+      const { data: { getItems: { items, itemsLength } } }: any = await getItems({ variables: pagination })
+      const allPages:any = Math.floor(itemsLength / pagination.limit)
+      setItemsLength(allPages)
+      setItemsState(items)
+    })()
+  }, [pagination.page])
+  
+  const pages = [...Array(itemsLength)].map((e,i)=>i+1)
 
-    setItemsState(items)
+  const clickHandler = async ({target}:any) => {
+    switch (target.innerText) {
+      case '«':
+        if(pagination.page!==1){
+          setPagination((prevState)=>({...prevState, page: (prevState.page-1)}))
+        }          
+        break
+      case '»':
+        if(pagination.page!==itemsLength){
+          setPagination((prevState)=>({...prevState, page: (prevState.page+1)}))
+        }
+        break
+      default:
+        setPagination((prevState)=>({...prevState, page: +target.innerText}))
+    }
   }
-
-  console.log('response', itemsState)
   return (
     <>
       <h1>ItemList</h1>
@@ -29,7 +51,7 @@ export default function ItemList() {
           {itemsState.map((e) => {
             return (
               <>
-                <div key={e.id} style={{
+                <div key={e.id+'b'} style={{
                   marginLeft: '50px', width: '200px', marginBottom: '20px'
                 }}>
                   <img src={e.img} style={{ width: '100px', height: '100px', marginBottom: '20px' }} />
@@ -45,11 +67,18 @@ export default function ItemList() {
         </div>
 
       </div>
-      <button onClick={testHandler} style={{
-        position: 'relative',
-        left: '50%',
-        transform: 'translate(-50%, 0)',
-      }}>download</button>
+      <div className="pagination" onClick={clickHandler}>
+        <a>«</a>
+        {pages.map((e)=> {
+          const classActive = pagination.page===e ? 'active' : ''
+          return (
+            <>
+            <a key={e+'a'} className={classActive}>{e}</a>
+            </>
+          )
+        })}
+        <a>»</a>
+      </div>
 
     </>
   );

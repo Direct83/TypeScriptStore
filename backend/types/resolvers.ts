@@ -24,7 +24,8 @@ export const resolvers: ResolverMap = {
       const {page, limit} = args.input
       const offset= page*limit-limit
       const items = await productModel.findAll({offset, limit, raw:true})
-      return {items}
+      const itemsLength = (await productModel.findAll({raw:true})).length      
+      return {items, itemsLength}
     },
     signOut: async (_, __, { req, res, next }) => {
       try {
